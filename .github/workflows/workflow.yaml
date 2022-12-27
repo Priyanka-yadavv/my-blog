@@ -11,7 +11,7 @@ jobs:
       - name: Set up MySQL
         run: |
           sudo /etc/init.d/mysql start
-          sudo mysql -e 'CREATE DATABASE wordpress_test;' -uroot -proot
+          sudo mysql -e 'CREATE DATABASE test;' -uroot -proot
           sudo mysql -e 'SHOW DATABASES;' -uroot -proot
       - name: Check out repository code
         uses: actions/checkout@v2
