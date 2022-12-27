@@ -18,9 +18,10 @@ import (
 var a App
 
 func TestMain(m *testing.M) {
-	a.Initialize(
-		"root", "Priyanka#123", "prdetails")
-
+	err := a.Initialise()
+	if err != nil {
+		log.Fatal("Error occurred while initialising database: ", err)
+	}
 	ensureTableExists()
 	code := m.Run()
 	clearTable()
@@ -34,19 +35,18 @@ func ensureTableExists() {
 }
 
 func clearTable() {
-	fmt.Println("cleared everything from the table")
 	a.DB.Exec("DELETE FROM products")
 	//fmt.Println(res, err)
 	a.DB.Exec("ALTER TABLE products AUTO_INCREMENT=1")
 }
 
-const tableCreationQuery = `CREATE TABLE IF NOT EXISTS products
-(
-    id SERIAL,
-    name TEXT NOT NULL,
-    price NUMERIC(10,2) NOT NULL DEFAULT 0.00,
-    CONSTRAINT products_pkey PRIMARY KEY (id)
-)`
+const tableCreationQuery = `CREATE TABLE IF NOT EXISTS products (
+    id int NOT NULL AUTO_INCREMENT,
+    name varchar(255) NOT NULL,
+    quantity int,
+	price float(10,7),
+    PRIMARY KEY (id)
+);`
 
 func TestEmptyTable(t *testing.T) {
 	clearTable()
@@ -135,7 +135,7 @@ func addProducts(count int) {
 	}
 
 	for i := 0; i < count; i++ {
-		query := fmt.Sprintf("INSERT INTO products(name, price) VALUES('Product: %v', %v)", strconv.Itoa(i), (i+1.0)*10)
+		query := fmt.Sprintf("INSERT INTO products(name, quantity, price) VALUES('Product: %v', %v, %v)", strconv.Itoa(i), i, (i+1.0)*10)
 		a.DB.Exec(query)
 	}
 }
