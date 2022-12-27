@@ -19,6 +19,7 @@ jobs:
         with:
           host port: 3306
           mysql database: 'prdetails'
-          mysql root password: 'root'
+          mysql user: 'dev'
+          mysql password: 'Priyanka#123'
       - name: Run tests
         run: go test
