@@ -9,6 +9,22 @@ on: push
 jobs:
   run_code_checks:
     runs-on: ubuntu-latest
+    services:
+      mysql-master:
+        image: mysql:5.7
+        ports:
+          - 3306/tcp
+        env:
+          MYSQL_DATABASE: ${{ env.MYSQL_DATABASE }}
+          MYSQL_USER: ${{ env.MYSQL_USER }}
+          MYSQL_PASSWORD: ${{ env.MYSQL_PASSWORD }}
+          MYSQL_ROOT_PASSWORD: ${{ env.MYSQL_PASSWORD }}
+        options: >-
+          --name=mysql-master
+          --health-cmd="mysqladmin ping"
+          --health-interval=10s
+          --health-timeout=5s
+          --health-retries=3
     steps:
       - name: Check out repository code
         uses: actions/checkout@v2
@@ -21,20 +37,4 @@ jobs:
           go fmt ./...
           go vet ./...
       - name: Run tests
-        services:
-          mysql-master:
-            image: mysql:5.7
-            ports:
-              - 3306/tcp
-            env:
-              MYSQL_DATABASE: ${{ env.MYSQL_DATABASE }}
-              MYSQL_USER: ${{ env.MYSQL_USER }}
-              MYSQL_PASSWORD: ${{ env.MYSQL_PASSWORD }}
-              MYSQL_ROOT_PASSWORD: ${{ env.MYSQL_PASSWORD }}
-            options: >-
-              --name=mysql-master
-              --health-cmd="mysqladmin ping"
-              --health-interval=10s
-              --health-timeout=5s
-              --health-retries=3
         run: go test
