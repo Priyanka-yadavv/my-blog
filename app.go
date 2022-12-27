@@ -9,7 +9,6 @@ import (
 	"log"
 	"net/http"
 	"strconv"
-	"time"
 )
 
 type App struct {
@@ -21,7 +20,7 @@ func (app *App) Initialise() error {
 	connectionString := fmt.Sprintf("%v:%v@tcp(127.0.0.1:3306)/%v", DbUser, DbPassword, DbName)
 	var err error
 	app.DB, err = sql.Open("mysql", connectionString)
-	app.DB.SetConnMaxLifetime(time.Minute * 4)
+	app.DB.SetMaxIdleConns(0)
 	if err != nil {
 		return err
 	}
