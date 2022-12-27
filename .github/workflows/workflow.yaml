@@ -1,21 +1,17 @@
 name: Continuous Integration
+env:
+  DB_DATABASE: test
+  DB_USER: root
+  DB_PASSWORD: Priyanka#123
 on: push
 jobs:
   run_code_checks:
     runs-on: ubuntu-latest
-    container:
-      image: node:14.5.0-alpine
-    services:
-      services:
-        mysql:
-          image: mysql:5.7
-          env:
-            MYSQL_DATABASE: "prdetails"
-            MYSQL_ROOT_PASSWORD: "Priyanka#123"
-          ports:
-            - 33306:3306
-          options: --health-cmd="mysqladmin ping" --health-interval=10s --health-timeout=5s --health-retries=3
     steps:
+      - name: Set up MySQL
+        run: |
+          sudo /etc/init.d/mysql start
+          mysql -e 'CREATE DATABASE ${{ env.DB_DATABASE }};' -u${{ env.DB_USER }} -p${{ env.DB_PASSWORD }}
       - name: Check out repository code
         uses: actions/checkout@v2
       - name: Setup go
