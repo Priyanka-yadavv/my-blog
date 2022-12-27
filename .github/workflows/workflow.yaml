@@ -14,5 +14,10 @@ jobs:
         run: |
           go fmt ./...
           go vet ./...
+      - name: Setup mysql
+        uses: mirromutth/mysql-action@v1.1
+        with:
+          mysql database: 'prdetails'
+          mysql root password: 'Priyanka#123'
       - name: Run tests
         run: go test
