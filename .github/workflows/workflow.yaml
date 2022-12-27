@@ -7,8 +7,8 @@ jobs:
       - name: Set up MySQL
         run: |
           sudo /etc/init.d/mysql start
-          sudo mysql -e 'CREATE DATABASE test;' -u root -p root
-          sudo mysql -e 'SHOW DATABASES;' -u root -p root
+          sudo mysql -e 'CREATE DATABASE test;' -uroot -proot
+          sudo mysql -e 'SHOW DATABASES;' -uroot -proot
       - name: Check out repository code
         uses: actions/checkout@v2
       - name: Setup go
