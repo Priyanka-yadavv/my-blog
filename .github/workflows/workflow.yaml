@@ -1,4 +1,10 @@
 name: Continuous Integration
+env:
+  MYSQL_DATABASE: "prdetails"
+  MYSQL_USER: "dev"
+  MYSQL_PASSWORD: "Priyanka#123"
+  MYSQL_HOST: mysql-master
+  NODE_ENV: test
 on: push
 jobs:
   run_code_checks:
@@ -14,12 +20,21 @@ jobs:
         run: |
           go fmt ./...
           go vet ./...
-      - name: Setup mysql
-        uses: mirromutth/mysql-action@v1.1
-        with:
-          host port: 3306
-          mysql database: 'prdetails'
-          mysql user: 'dev'
-          mysql password: 'Priyanka#123'
       - name: Run tests
+        services:
+          mysql-master:
+            image: mysql:5.7
+            ports:
+              - 3306/tcp
+            env:
+              MYSQL_DATABASE: ${{ env.MYSQL_DATABASE }}
+              MYSQL_USER: ${{ env.MYSQL_USER }}
+              MYSQL_PASSWORD: ${{ env.MYSQL_PASSWORD }}
+              MYSQL_ROOT_PASSWORD: ${{ env.MYSQL_PASSWORD }}
+            options: >-
+              --name=mysql-master
+              --health-cmd="mysqladmin ping"
+              --health-interval=10s
+              --health-timeout=5s
+              --health-retries=3
         run: go test
