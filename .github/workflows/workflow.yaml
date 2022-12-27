@@ -9,6 +9,8 @@ on: push
 jobs:
   run_code_checks:
     runs-on: ubuntu-latest
+    container:
+      image: node:14.5.0-alpine
     services:
       mysql-master:
         image: mysql:5.7
