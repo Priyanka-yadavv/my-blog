@@ -1,10 +1,4 @@
 name: Continuous Integration
-env:
-  MYSQL_DATABASE: "prdetails"
-  MYSQL_USER: "dev"
-  MYSQL_PASSWORD: "Priyanka#123"
-  MYSQL_HOST: mysql-master
-  NODE_ENV: test
 on: push
 jobs:
   run_code_checks:
@@ -12,21 +6,15 @@ jobs:
     container:
       image: node:14.5.0-alpine
     services:
-      mysql-master:
-        image: mysql:5.7
-        ports:
-          - 3306/tcp
-        env:
-          MYSQL_DATABASE: ${{ env.MYSQL_DATABASE }}
-          MYSQL_USER: ${{ env.MYSQL_USER }}
-          MYSQL_PASSWORD: ${{ env.MYSQL_PASSWORD }}
-          MYSQL_ROOT_PASSWORD: ${{ env.MYSQL_PASSWORD }}
-        options: >-
-          --name=mysql-master
-          --health-cmd="mysqladmin ping"
-          --health-interval=10s
-          --health-timeout=5s
-          --health-retries=3
+      services:
+        mysql:
+          image: mysql:5.7
+          env:
+            MYSQL_DATABASE: "prdetails"
+            MYSQL_ROOT_PASSWORD: "Priyanka#123"
+          ports:
+            - 33306:3306
+          options: --health-cmd="mysqladmin ping" --health-interval=10s --health-timeout=5s --health-retries=3
     steps:
       - name: Check out repository code
         uses: actions/checkout@v2
